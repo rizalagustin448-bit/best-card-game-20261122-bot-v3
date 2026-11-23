@@ -1,1 +1,1 @@
-[{"name":"2-action.jpg","query":"?shot=action&seed=7"},{"name":"1-title.jpg","query":"?shot=title&seed=7"},{"name":"3-nearwin.jpg","query":"?shot=nearwin&seed=7"},{"name":"4-win.jpg","query":"?shot=win&seed=7"}]
+[{"name":"1-action.jpg","query":"?shot=action&seed=7"},{"name":"2-title.jpg","query":"?shot=title&seed=7"},{"name":"3-win.jpg","query":"?shot=win&seed=7"},{"name":"4-loss.jpg","query":"?shot=lose&seed=7"}]

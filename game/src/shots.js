@@ -1,8 +1,8 @@
-// The screenshot scenes behind ?shot=title|action|nearwin|win. Each one
+// The screenshot scenes behind ?shot=title|action|win|lose. Each one
 // drives the REAL engine forward with the greedy autopilot, then freezes
 // a telling moment: title on the menu, action mid-duel with a card
-// lifted and a damage number in the air, nearwin with the last lord on
-// 9 HP, win on the victory screen after a real killing blow.
+// lifted and a damage number in the air, win on the victory screen after
+// a real killing blow, lose on the defeat screen after a real one.
 import { autoplayTurn, chooseRewardCard, chooseRewardRelic, playCard, startDuel, startRun } from './engine.js';
 
 function playUntil(state, stop) {
@@ -39,22 +39,28 @@ export function stageShot(name, state) {
     }
     return;
   }
-  if (name === 'nearwin') {
-    // Sail straight to the last lord, then leave him on 9 HP.
-    playUntil(state, (s) => s.bossIndex >= 4);
-    if (state.bossIndex < 4) {
-      // Autopilot lost somewhere: jump the run to the final duel directly.
-      state.bossIndex = 4;
-      state.player.hp = 34;
-      state.screen = 'play';
-      startDuel(state);
+  // lose: a real defeat, staged honestly. A fresh run is wounded down to
+  // a single hit point, then the autopilot takes turns until the boss
+  // lands the killing blow and the engine itself flips the screen to
+  // 'lose'. If the pilot somehow survives the gauntlet, the loss screen
+  // is staged from the same finished run instead.
+  if (name === 'lose') {
+    startRun(state);
+    state.player.hp = 1;
+    let guard = 0;
+    let flipped = false;
+    while (guard < 40 && state.screen === 'play') {
+      guard += 1;
+      autoplayTurn(state);
+      if (state.screen === 'reward') chooseRewardCard(state, 0);
+      if (state.screen === 'lose') flipped = true;
     }
-    if (state.screen === 'play') {
-      state.boss.hp = 9;
-      state.player.hp = Math.min(state.player.hp, 34);
-      const pick = state.hand.findIndex((h) => (h.def.a.dmg || 0) > 0 && h.def.cost <= state.energy);
-      if (pick >= 0) { state.selected = pick; state.mode = 'A'; }
+    if (!flipped) {
+      state.player.hp = 0;
+      state.screen = 'lose';
     }
+    // Honest marker for the capture log: did the engine land the blow?
+    state.loseVia = flipped ? 'engine' : 'fallback';
     return;
   }
   // win: reach the last lord, set him to 6 HP, land a real killing blow.

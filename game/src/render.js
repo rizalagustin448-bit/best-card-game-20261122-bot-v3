@@ -392,7 +392,19 @@ export function createRenderer(canvas) {
   function drawEnd(state, won) {
     ctx.fillStyle = won ? 'rgba(20, 40, 8, 0.55)' : 'rgba(10, 4, 20, 0.72)';
     ctx.fillRect(0, 0, VIEW_W, VIEW_H);
+    const s = state.stats;
+    const statsLine = `Duels won ${s.bosses} · Turns ${s.turns} · Cards played ${s.played} · Tides fired ${s.tides} · Damage dealt ${s.damage}`;
     if (won) {
+      // Gold rays fanning out behind the crown.
+      ctx.strokeStyle = 'rgba(251,191,36,0.35)';
+      ctx.lineWidth = 6;
+      for (let i = 0; i < 12; i += 1) {
+        const a = (i / 12) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(640 + Math.cos(a) * 96, 260 + Math.sin(a) * 96);
+        ctx.lineTo(640 + Math.cos(a) * 150, 260 + Math.sin(a) * 150);
+        ctx.stroke();
+      }
       ctx.fillStyle = '#fbbf24';
       ctx.beginPath();
       ctx.arc(640, 260, 110, 0, Math.PI * 2);
@@ -403,14 +415,55 @@ export function createRenderer(canvas) {
       ctx.fill();
       text('👑', 640, 292, 72, '#fbbf24', 'center');
       text('THE TIDE IS YOURS', 640, 430, 58, '#fde68a', 'center', 'bold');
-      text('All five tide-lords drowned. The sea answers to you now.', 640, 478, 20, TABLE.ink, 'center');
+      text(`${s.bosses} / 5 TIDE-LORDS DROWNED`, 640, 470, 30, '#fbbf24', 'center', 'bold');
+      text(statsLine, 640, 505, 18, TABLE.ink, 'center');
+      text('PRESS SPACE OR CLICK TO SAIL AGAIN', 640, 560, 22, '#fef3c7', 'center', 'bold');
     } else {
-      text('🌑 SWALLOWED BY THE DEEP 🌑', 640, 300, 48, '#c4b5fd', 'center', 'bold');
-      text(`${state.boss ? state.boss.def.name : 'The sea'} keeps the diver. The tide takes back its own.`, 640, 360, 20, TABLE.ink, 'center');
+      // Anchor drawn with strokes only (no emoji — stays legible anywhere).
+      ctx.fillStyle = 'rgba(8, 4, 18, 0.9)';
+      ctx.beginPath();
+      ctx.arc(640, 210, 92, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#8b7cc8';
+      ctx.lineWidth = 7;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(640, 210, 92, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(640, 148, 14, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(640, 162);
+      ctx.lineTo(640, 262);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(598, 182);
+      ctx.lineTo(682, 182);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(640, 262);
+      ctx.quadraticCurveTo(600, 258, 592, 224);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(640, 262);
+      ctx.quadraticCurveTo(680, 258, 688, 224);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(592, 224);
+      ctx.lineTo(580, 238);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(688, 224);
+      ctx.lineTo(700, 238);
+      ctx.stroke();
+      text('SWALLOWED BY THE DEEP', 640, 380, 56, '#c4b5fd', 'center', 'bold');
+      text(`${state.boss ? state.boss.def.name : 'The sea'} keeps the diver.`, 640, 410, 20, TABLE.ink, 'center');
+      text('The tide takes back its own.', 640, 438, 20, TABLE.ink, 'center');
+      text(statsLine, 640, 478, 18, TABLE.ink, 'center');
+      text(`FELL TO ${state.boss ? state.boss.def.name.toUpperCase() : 'THE SEA'} — DUEL ${state.bossIndex + 1} OF 5`, 640, 516, 26, '#c4b5fd', 'center', 'bold');
+      text('PRESS SPACE OR CLICK TO SAIL AGAIN', 640, 560, 22, '#fef3c7', 'center', 'bold');
     }
-    const s = state.stats;
-    text(`Duels won ${s.bosses} · Turns ${s.turns} · Cards played ${s.played} · Tides fired ${s.tides} · Damage dealt ${s.damage}`, 640, 540, 18, TABLE.ink, 'center');
-    text('PRESS SPACE OR CLICK TO SAIL AGAIN', 640, 600, 22, '#fef3c7', 'center', 'bold');
   }
 
   function draw(state, screen, hover, t) {

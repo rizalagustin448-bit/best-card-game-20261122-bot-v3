@@ -1,7 +1,7 @@
 // Boot and the one loop: clicks and keys are read every frame, the
 // floating numbers and shake decay with time, and the renderer paints
 // what is there. Screens: title, play, reward, win, lose.
-// ?seed=N fixes the run. ?shot=title|action|nearwin|win stages that
+// ?seed=N fixes the run. ?shot=title|action|win|lose stages that
 // scene instead of running the loop, paints it twice and sets
 // window.__shotReady for a screenshot.
 import { createRandom } from './random.js';
