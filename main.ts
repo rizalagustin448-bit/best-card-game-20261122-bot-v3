@@ -1,3 +1,9 @@
+// TIDEBREAKER — a tide-lord card battler: 52 dual-mode cards, 14 relics, 5 lords
+// across 3 acts. This entrypoint is the kit's static-game handoff: it copies
+// game/ and screenshots/ beside this file into /output and writes
+// /output/dossier.json for the judge. Serve it locally with `node serve.ts`,
+// then open http://localhost:8080.
+//
 // A working best-game-01 entry (Node 22, standard library only): the game is this directory's
 // game/ folder, plain static files a desktop browser loads offline (game/index.html and its ES
 // modules, no library and no network request), and the program hands it in. It copies game/ and
